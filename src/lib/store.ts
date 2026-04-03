@@ -222,6 +222,58 @@ export function useNotes(userId: string | undefined) {
   return { notes, saveNote, addImage, deleteImage, getNoteForDate };
 }
 
+export interface SavedItem {
+  id: string;
+  type: "link" | "snippet";
+  title: string;
+  url: string | null;
+  content: string;
+  tags: string[];
+  createdAt: string;
+}
+
+export function useSavedItems(userId: string | undefined) {
+  const [items, setItems] = useState<SavedItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchItems = useCallback(async () => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from("saved_items")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+    if (data) {
+      setItems(data.map(i => ({ id: i.id, type: i.type as "link" | "snippet", title: i.title, url: i.url, content: i.content ?? "", tags: i.tags ?? [], createdAt: i.created_at })));
+    }
+    setLoading(false);
+  }, [userId]);
+
+  useEffect(() => { fetchItems(); }, [fetchItems]);
+
+  const addItem = useCallback(async (item: { type: "link" | "snippet"; title: string; url?: string; content?: string; tags?: string[] }) => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from("saved_items")
+      .insert({ user_id: userId, type: item.type, title: item.title, url: item.url ?? null, content: item.content ?? "", tags: item.tags ?? [] })
+      .select()
+      .single();
+    if (data) setItems(prev => [{ id: data.id, type: data.type as "link" | "snippet", title: data.title, url: data.url, content: data.content ?? "", tags: data.tags ?? [], createdAt: data.created_at }, ...prev]);
+  }, [userId]);
+
+  const deleteItem = useCallback(async (id: string) => {
+    await supabase.from("saved_items").delete().eq("id", id);
+    setItems(prev => prev.filter(i => i.id !== id));
+  }, []);
+
+  const updateItem = useCallback(async (id: string, updates: { title?: string; url?: string; content?: string; tags?: string[] }) => {
+    await supabase.from("saved_items").update(updates).eq("id", id);
+    setItems(prev => prev.map(i => i.id === id ? { ...i, ...updates } : i));
+  }, []);
+
+  return { items, loading, addItem, deleteItem, updateItem };
+}
+
 export function formatDate(date: Date): string {
   return date.toISOString().split("T")[0];
 }
