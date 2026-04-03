@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface Task {
   id: string;
@@ -15,82 +16,107 @@ export interface ReadingEntry {
   date: string; // YYYY-MM-DD
 }
 
-function getStorageKey(key: string) {
-  return `bloom_${key}`;
+export interface DailyNote {
+  id: string;
+  content: string;
+  date: string;
+  images: NoteImage[];
 }
 
-function loadFromStorage<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-  try {
-    const raw = localStorage.getItem(getStorageKey(key));
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
+export interface NoteImage {
+  id: string;
+  imageUrl: string;
 }
 
-function saveToStorage<T>(key: string, value: T) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(getStorageKey(key), JSON.stringify(value));
-}
+export function useTasks(userId: string | undefined) {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>(() => loadFromStorage("tasks", []));
+  const fetchTasks = useCallback(async () => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("user_id", userId)
+      .order("date", { ascending: false });
+    if (data) {
+      setTasks(data.map(t => ({ id: t.id, text: t.text, completed: t.completed, date: t.date })));
+    }
+    setLoading(false);
+  }, [userId]);
 
-  const save = useCallback((updated: Task[]) => {
-    setTasks(updated);
-    saveToStorage("tasks", updated);
+  useEffect(() => { fetchTasks(); }, [fetchTasks]);
+
+  const addTask = useCallback(async (text: string, date: string) => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from("tasks")
+      .insert({ user_id: userId, text, date, completed: false })
+      .select()
+      .single();
+    if (data) setTasks(prev => [...prev, { id: data.id, text: data.text, completed: data.completed, date: data.date }]);
+  }, [userId]);
+
+  const toggleTask = useCallback(async (id: string) => {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+    await supabase.from("tasks").update({ completed: !task.completed }).eq("id", id);
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  }, [tasks]);
+
+  const deleteTask = useCallback(async (id: string) => {
+    await supabase.from("tasks").delete().eq("id", id);
+    setTasks(prev => prev.filter(t => t.id !== id));
   }, []);
 
-  const addTask = useCallback((text: string, date: string) => {
-    const task: Task = { id: crypto.randomUUID(), text, completed: false, date };
-    save([...tasks, task]);
-  }, [tasks, save]);
+  const editTask = useCallback(async (id: string, text: string) => {
+    await supabase.from("tasks").update({ text }).eq("id", id);
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, text } : t));
+  }, []);
 
-  const toggleTask = useCallback((id: string) => {
-    save(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  }, [tasks, save]);
-
-  const deleteTask = useCallback((id: string) => {
-    save(tasks.filter(t => t.id !== id));
-  }, [tasks, save]);
-
-  const editTask = useCallback((id: string, text: string) => {
-    save(tasks.map(t => t.id === id ? { ...t, text } : t));
-  }, [tasks, save]);
-
-  const getTasksForDate = useCallback((date: string) => {
-    return tasks.filter(t => t.date === date);
-  }, [tasks]);
+  const getTasksForDate = useCallback((date: string) => tasks.filter(t => t.date === date), [tasks]);
 
   const getTasksForMonth = useCallback((year: number, month: number) => {
     const prefix = `${year}-${String(month + 1).padStart(2, "0")}`;
     return tasks.filter(t => t.date.startsWith(prefix));
   }, [tasks]);
 
-  return { tasks, addTask, toggleTask, deleteTask, editTask, getTasksForDate, getTasksForMonth };
+  return { tasks, loading, addTask, toggleTask, deleteTask, editTask, getTasksForDate, getTasksForMonth };
 }
 
-export function useReadingLog() {
-  const [entries, setEntries] = useState<ReadingEntry[]>(() => loadFromStorage("reading", []));
+export function useReadingLog(userId: string | undefined) {
+  const [entries, setEntries] = useState<ReadingEntry[]>([]);
 
-  const save = useCallback((updated: ReadingEntry[]) => {
-    setEntries(updated);
-    saveToStorage("reading", updated);
+  const fetchEntries = useCallback(async () => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from("reading_entries")
+      .select("*")
+      .eq("user_id", userId)
+      .order("date", { ascending: false });
+    if (data) {
+      setEntries(data.map(e => ({ id: e.id, title: e.title, pagesRead: e.pages_read, minutesSpent: e.minutes_spent, date: e.date })));
+    }
+  }, [userId]);
+
+  useEffect(() => { fetchEntries(); }, [fetchEntries]);
+
+  const addEntry = useCallback(async (title: string, pagesRead: number, minutesSpent: number, date: string) => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from("reading_entries")
+      .insert({ user_id: userId, title, pages_read: pagesRead, minutes_spent: minutesSpent, date })
+      .select()
+      .single();
+    if (data) setEntries(prev => [...prev, { id: data.id, title: data.title, pagesRead: data.pages_read, minutesSpent: data.minutes_spent, date: data.date }]);
+  }, [userId]);
+
+  const deleteEntry = useCallback(async (id: string) => {
+    await supabase.from("reading_entries").delete().eq("id", id);
+    setEntries(prev => prev.filter(e => e.id !== id));
   }, []);
 
-  const addEntry = useCallback((title: string, pagesRead: number, minutesSpent: number, date: string) => {
-    const entry: ReadingEntry = { id: crypto.randomUUID(), title, pagesRead, minutesSpent, date };
-    save([...entries, entry]);
-  }, [entries, save]);
-
-  const deleteEntry = useCallback((id: string) => {
-    save(entries.filter(e => e.id !== id));
-  }, [entries, save]);
-
-  const getEntriesForDate = useCallback((date: string) => {
-    return entries.filter(e => e.date === date);
-  }, [entries]);
+  const getEntriesForDate = useCallback((date: string) => entries.filter(e => e.date === date), [entries]);
 
   const getEntriesForMonth = useCallback((year: number, month: number) => {
     const prefix = `${year}-${String(month + 1).padStart(2, "0")}`;
@@ -112,6 +138,88 @@ export function useReadingLog() {
   }, [entries]);
 
   return { entries, addEntry, deleteEntry, getEntriesForDate, getEntriesForMonth, getReadingStreak };
+}
+
+export function useNotes(userId: string | undefined) {
+  const [notes, setNotes] = useState<DailyNote[]>([]);
+
+  const fetchNotes = useCallback(async () => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from("daily_notes")
+      .select("*, note_images(*)")
+      .eq("user_id", userId)
+      .order("date", { ascending: false });
+    if (data) {
+      setNotes(data.map(n => ({
+        id: n.id,
+        content: n.content,
+        date: n.date,
+        images: (n.note_images || []).map((img: { id: string; image_url: string }) => ({ id: img.id, imageUrl: img.image_url })),
+      })));
+    }
+  }, [userId]);
+
+  useEffect(() => { fetchNotes(); }, [fetchNotes]);
+
+  const saveNote = useCallback(async (content: string, date: string) => {
+    if (!userId) return null;
+    const existing = notes.find(n => n.date === date);
+    if (existing) {
+      await supabase.from("daily_notes").update({ content }).eq("id", existing.id);
+      setNotes(prev => prev.map(n => n.id === existing.id ? { ...n, content } : n));
+      return existing.id;
+    } else {
+      const { data } = await supabase
+        .from("daily_notes")
+        .insert({ user_id: userId, content, date })
+        .select()
+        .single();
+      if (data) {
+        const newNote: DailyNote = { id: data.id, content: data.content, date: data.date, images: [] };
+        setNotes(prev => [newNote, ...prev]);
+        return data.id;
+      }
+      return null;
+    }
+  }, [userId, notes]);
+
+  const addImage = useCallback(async (noteId: string, file: File) => {
+    if (!userId) return;
+    const ext = file.name.split(".").pop();
+    const path = `${userId}/${noteId}/${crypto.randomUUID()}.${ext}`;
+    const { error: uploadError } = await supabase.storage.from("note-images").upload(path, file);
+    if (uploadError) throw uploadError;
+    const { data: urlData } = supabase.storage.from("note-images").getPublicUrl(path);
+    const imageUrl = urlData.publicUrl;
+
+    const { data } = await supabase
+      .from("note_images")
+      .insert({ note_id: noteId, image_url: imageUrl })
+      .select()
+      .single();
+
+    if (data) {
+      setNotes(prev => prev.map(n =>
+        n.id === noteId
+          ? { ...n, images: [...n.images, { id: data.id, imageUrl: data.image_url }] }
+          : n
+      ));
+    }
+  }, [userId]);
+
+  const deleteImage = useCallback(async (noteId: string, imageId: string) => {
+    await supabase.from("note_images").delete().eq("id", imageId);
+    setNotes(prev => prev.map(n =>
+      n.id === noteId
+        ? { ...n, images: n.images.filter(i => i.id !== imageId) }
+        : n
+    ));
+  }, []);
+
+  const getNoteForDate = useCallback((date: string) => notes.find(n => n.date === date) || null, [notes]);
+
+  return { notes, saveNote, addImage, deleteImage, getNoteForDate };
 }
 
 export function formatDate(date: Date): string {
