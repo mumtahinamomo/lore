@@ -210,7 +210,7 @@ export function TodoView({ addTask, toggleTask, deleteTask, editTask, getTasksFo
 
         {dayTasks.length === 0 && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-sm text-muted-foreground py-8">
-            No tasks for this day. Add one above! ✨
+            No tasks for this day. Add one above!
           </motion.p>
         )}
       </div>

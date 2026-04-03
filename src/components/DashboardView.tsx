@@ -12,11 +12,11 @@ interface DashboardViewProps {
 }
 
 const greetings = [
-  "You're writing your story 📖",
-  "One chapter at a time ✨",
-  "Keep building your lore 🕯️",
-  "You've got this 💪",
-  "Every page counts 🌿",
+  "You're writing your story",
+  "One chapter at a time",
+  "Keep building your lore",
+  "You've got this",
+  "Every page counts",
 ];
 
 export function DashboardView({ tasks, readingEntries, readingStreak }: DashboardViewProps) {
@@ -139,7 +139,7 @@ export function DashboardView({ tasks, readingEntries, readingStreak }: Dashboar
 
 function getTimeOfDay() {
   const h = new Date().getHours();
-  if (h < 12) return "morning 🌅";
-  if (h < 17) return "afternoon ☀️";
-  return "evening 🌙";
+  if (h < 12) return "morning";
+  if (h < 17) return "afternoon";
+  return "evening";
 }

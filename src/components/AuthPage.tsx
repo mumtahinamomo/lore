@@ -28,7 +28,7 @@ export function AuthPage({ onSignIn, onSignUp }: AuthPageProps) {
         await onSignIn(email, password);
       } else {
         await onSignUp(email, password);
-        setSuccess("Check your email to confirm your account 💌");
+        setSuccess("Check your email to confirm your account.");
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -128,7 +128,7 @@ export function AuthPage({ onSignIn, onSignUp }: AuthPageProps) {
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Track your tasks, reading & notes 📖
+          Track your tasks, reading & notes
         </p>
       </motion.div>
     </div>

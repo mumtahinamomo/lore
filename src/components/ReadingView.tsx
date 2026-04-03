@@ -52,7 +52,7 @@ export function ReadingView({ entries, addEntry, deleteEntry, getEntriesForDate,
   return (
     <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.08 } } }} className="space-y-5">
       <motion.div variants={item} className="flex items-center justify-between">
-        <h2 className="font-display text-xl font-bold">Reading Log 📚</h2>
+        <h2 className="font-display text-xl font-bold">Reading Log</h2>
         <Button onClick={() => setShowForm(!showForm)} size="sm" className="rounded-xl gap-1">
           <Plus className="h-3.5 w-3.5" />
           Log
@@ -161,7 +161,7 @@ export function ReadingView({ entries, addEntry, deleteEntry, getEntriesForDate,
             ))}
           </AnimatePresence>
           {todayEntries.length === 0 && (
-            <p className="text-center text-sm text-muted-foreground py-6">No reading logged today. Tap + to start 📖</p>
+            <p className="text-center text-sm text-muted-foreground py-6">No reading logged today. Tap + to start</p>
           )}
         </div>
       </motion.div>

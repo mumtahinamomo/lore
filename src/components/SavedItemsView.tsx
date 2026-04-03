@@ -47,7 +47,7 @@ export function SavedItemsView({ items, loading, addItem, deleteItem }: SavedIte
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-display font-bold text-foreground">Saved Items ✨</h1>
+        <h1 className="text-2xl font-display font-bold text-foreground">Saved Items</h1>
         <Button size="sm" onClick={() => setShowForm(!showForm)} className="rounded-full gap-1">
           {showForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
           {showForm ? "Cancel" : "Add"}
@@ -107,7 +107,7 @@ export function SavedItemsView({ items, loading, addItem, deleteItem }: SavedIte
               </div>
 
               <Button onClick={handleSubmit} disabled={!title.trim()} className="w-full rounded-xl">
-                Save Item 💖
+                Save Item
               </Button>
             </div>
           </motion.div>
@@ -122,7 +122,7 @@ export function SavedItemsView({ items, loading, addItem, deleteItem }: SavedIte
             onClick={() => setFilter(f)}
             className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
           >
-            {f === "all" ? "All" : f === "link" ? "🔗 Links" : "📝 Snippets"}
+            {f === "all" ? "All" : f === "link" ? "Links" : "Snippets"}
           </button>
         ))}
       </div>
@@ -133,7 +133,7 @@ export function SavedItemsView({ items, loading, addItem, deleteItem }: SavedIte
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <p className="text-lg">No saved items yet</p>
-          <p className="text-sm mt-1">Tap + to save a link or snippet 💕</p>
+          <p className="text-sm mt-1">Tap + to save a link or snippet</p>
         </div>
       ) : (
         <div className="space-y-3">
