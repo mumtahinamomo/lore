@@ -47,7 +47,7 @@ export function SavedItemsView({ items, loading, addItem, deleteItem }: SavedIte
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-display font-bold text-foreground">Saved Items ✨</h1>
+        <h1 className="text-2xl font-display font-bold text-foreground">Saved Items</h1>
         <Button size="sm" onClick={() => setShowForm(!showForm)} className="rounded-full gap-1">
           {showForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
           {showForm ? "Cancel" : "Add"}
