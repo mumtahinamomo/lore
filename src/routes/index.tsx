@@ -103,6 +103,14 @@ function AppContent({ user, activeView, setActiveView, signOut }: {
                 deleteImage={notesStore.deleteImage}
               />
             )}
+            {activeView === "saved" && (
+              <SavedItemsView
+                items={savedStore.items}
+                loading={savedStore.loading}
+                addItem={savedStore.addItem}
+                deleteItem={savedStore.deleteItem}
+              />
+            )}
             {activeView === "progress" && (
               <MonthlyProgressView
                 getTasksForMonth={taskStore.getTasksForMonth}
