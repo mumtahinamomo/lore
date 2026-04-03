@@ -113,6 +113,8 @@ function AppContent({ user, activeView, setActiveView, signOut }: {
             )}
             {activeView === "progress" && (
               <MonthlyProgressView
+                tasks={taskStore.tasks}
+                readingEntries={readingStore.entries}
                 getTasksForMonth={taskStore.getTasksForMonth}
                 getReadingForMonth={readingStore.getEntriesForMonth}
               />

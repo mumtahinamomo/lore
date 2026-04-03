@@ -5,15 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { Task, ReadingEntry } from "@/lib/store";
+import { WeeklySummary } from "@/components/WeeklySummary";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 interface MonthlyProgressViewProps {
+  tasks: Task[];
+  readingEntries: ReadingEntry[];
   getTasksForMonth: (year: number, month: number) => Task[];
   getReadingForMonth: (year: number, month: number) => ReadingEntry[];
 }
 
-export function MonthlyProgressView({ getTasksForMonth, getReadingForMonth }: MonthlyProgressViewProps) {
+export function MonthlyProgressView({ tasks, readingEntries, getTasksForMonth, getReadingForMonth }: MonthlyProgressViewProps) {
   const [current, setCurrent] = useState(new Date());
   const year = current.getFullYear();
   const month = current.getMonth();
@@ -133,6 +136,11 @@ export function MonthlyProgressView({ getTasksForMonth, getReadingForMonth }: Mo
             })}
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* Week-over-Week Summary */}
+      <motion.div variants={item}>
+        <WeeklySummary tasks={tasks} readingEntries={readingEntries} />
       </motion.div>
     </motion.div>
   );
