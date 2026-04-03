@@ -107,7 +107,7 @@ export function SavedItemsView({ items, loading, addItem, deleteItem }: SavedIte
               </div>
 
               <Button onClick={handleSubmit} disabled={!title.trim()} className="w-full rounded-xl">
-                Save Item 💖
+                Save Item
               </Button>
             </div>
           </motion.div>
