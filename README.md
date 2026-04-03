@@ -4,6 +4,8 @@
 
 Lore is a thousand year old word. It means the knowledge you pick up from living. The understanding you have at forty that you could not have explained at twenty. The things you only know because you were paying attention at the right moment.
 
+GGen Z brought “lore” back in our daily vocabulary. The lore of something is its real story which includes the layers, the history, the context that makes everything make sense. Gen Z made it trendy again, but it was always relevant.
+
 Most of us are not paying attention. We finish the list, close the laptop, and the day is just gone. We read something that we really love at that moment and shifts something in us but three months later we cannot even remember the title. We have ideas we want to keep, but they often end up scattered across notebooks and various apps, and sometimes get lost.
 
 That is the gap lore is trying to fill.
