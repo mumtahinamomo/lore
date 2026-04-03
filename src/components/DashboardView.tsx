@@ -12,11 +12,11 @@ interface DashboardViewProps {
 }
 
 const greetings = [
-  "You're doing amazing 💖",
-  "Keep blooming 🌸",
-  "One step at a time 🌷",
-  "You've got this 💪✨",
-  "Stay consistent, stay powerful 🌺",
+  "You're writing your story 📖",
+  "One chapter at a time ✨",
+  "Keep building your lore 🕯️",
+  "You've got this 💪",
+  "Every page counts 🌿",
 ];
 
 export function DashboardView({ tasks, readingEntries, readingStreak }: DashboardViewProps) {

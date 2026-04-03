@@ -128,7 +128,7 @@ export function AuthPage({ onSignIn, onSignUp }: AuthPageProps) {
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Track your tasks, reading & notes ✨
+          Track your tasks, reading & notes 📖
         </p>
       </motion.div>
     </div>

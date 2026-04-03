@@ -18,8 +18,8 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Bloom — Your Pink Productivity Companion" },
-      { name: "description", content: "Track tasks, reading habits, and personal growth with a calming pink productivity app." },
+      { title: "Lore — Every list you finish is a day you lived" },
+      { name: "description", content: "Track tasks, reading habits, and personal growth. Every list you finish is a day you lived. Lore keeps both." },
     ],
   }),
 });
