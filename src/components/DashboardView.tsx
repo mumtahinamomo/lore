@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { CheckCircle2, BookOpen, Target, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { WeeklySummary } from "@/components/WeeklySummary";
 import type { Task, ReadingEntry } from "@/lib/store";
 import { formatDate } from "@/lib/store";
 
