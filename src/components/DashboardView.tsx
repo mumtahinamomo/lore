@@ -134,6 +134,11 @@ export function DashboardView({ tasks, readingEntries, readingStreak }: Dashboar
           </Card>
         </motion.div>
       )}
+
+      {/* Weekly Summary */}
+      <motion.div variants={item}>
+        <WeeklySummary tasks={tasks} readingEntries={readingEntries} />
+      </motion.div>
     </motion.div>
   );
 }
