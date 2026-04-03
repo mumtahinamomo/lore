@@ -14,13 +14,125 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      daily_notes: {
+        Row: {
+          content: string
+          created_at: string
+          date: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          date: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          date?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      note_images: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          note_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          note_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          note_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_images_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "daily_notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reading_entries: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          minutes_spent: number
+          pages_read: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          minutes_spent?: number
+          pages_read?: number
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          minutes_spent?: number
+          pages_read?: number
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          completed: boolean
+          created_at: string
+          date: string
+          id: string
+          text: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          date: string
+          id?: string
+          text: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          id?: string
+          text?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_owner_of_note: { Args: { p_note_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
