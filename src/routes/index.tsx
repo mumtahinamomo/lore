@@ -56,6 +56,7 @@ function AppContent({ user, activeView, setActiveView, signOut }: {
   const taskStore = useTasks(user.id);
   const readingStore = useReadingLog(user.id);
   const notesStore = useNotes(user.id);
+  const savedStore = useSavedItems(user.id);
 
   return (
     <div className="min-h-screen bg-background pb-20">
