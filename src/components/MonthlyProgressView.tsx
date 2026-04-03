@@ -16,7 +16,7 @@ interface MonthlyProgressViewProps {
   getReadingForMonth: (year: number, month: number) => ReadingEntry[];
 }
 
-export function MonthlyProgressView({ getTasksForMonth, getReadingForMonth }: MonthlyProgressViewProps) {
+export function MonthlyProgressView({ tasks, readingEntries, getTasksForMonth, getReadingForMonth }: MonthlyProgressViewProps) {
   const [current, setCurrent] = useState(new Date());
   const year = current.getFullYear();
   const month = current.getMonth();
